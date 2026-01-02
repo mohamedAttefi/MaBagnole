@@ -1,71 +1,219 @@
 <?php include "../includes/header.php";?>
 
-<div class="flex min-h-screen bg-gray-100">
-    <aside class="w-64 bg-[#1A237E] text-white flex-shrink-0">
-        <div class="p-6 text-xl font-bold border-b border-blue-800">MaBagnole Admin</div>
-        <nav class="p-4 space-y-2">
-            <a href="#" class="block p-3 rounded-lg bg-blue-800 font-medium">Dashboard</a>
-            <a href="#" class="block p-3 rounded-lg hover:bg-blue-800 transition">Manage Vehicles</a>
-            <a href="#" class="block p-3 rounded-lg hover:bg-blue-800 transition">Reservations</a>
-            <a href="#" class="block p-3 rounded-lg hover:bg-blue-800 transition">User Reviews</a>
-        </nav>
-    </aside>
-
-    <main class="flex-1">
-        <header class="bg-white h-16 flex items-center justify-between px-8 border-b">
-            <h2 class="text-xl font-bold">Overview</h2>
+<main class="flex-grow py-8">
+    <div class="container mx-auto px-4">
+        <!-- Admin Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-dark">Tableau de bord Admin</h1>
+                <p class="text-gray-600">Bienvenue, Administrateur</p>
+            </div>
             <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-500">Admin User</span>
-                <div class="h-8 w-8 bg-orange-500 rounded-full"></div>
-            </div>
-        </header>
-
-        <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-600">
-                    <p class="text-xs font-bold text-gray-500 uppercase">Total Revenue</p>
-                    <h3 class="text-2xl font-bold mt-1">$42,500</h3>
+                <div class="relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
-                    <p class="text-xs font-bold text-gray-500 uppercase">Active Rentals</p>
-                    <h3 class="text-2xl font-bold mt-1">18</h3>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-green-500">
-                    <p class="text-xs font-bold text-gray-500 uppercase">Total Fleet</p>
-                    <h3 class="text-2xl font-bold mt-1">54</h3>
-                </div>
-                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-purple-500">
-                    <p class="text-xs font-bold text-gray-500 uppercase">New Users</p>
-                    <h3 class="text-2xl font-bold mt-1">124</h3>
+                <div class="flex items-center">
+                    <div class="w-8 h-8 bg-secondary rounded-full flex items-center justify-center mr-2">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <span class="font-semibold text-dark">Admin</span>
                 </div>
             </div>
-
-            <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-                <div class="p-6 border-b flex justify-between items-center">
-                    <h3 class="font-bold">Recent Reservations</h3>
-                    <button class="text-sm text-blue-600 font-medium">Export CSV</button>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Card 1 -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Véhicules</p>
+                        <p class="text-3xl font-bold text-dark mt-2">156</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-car text-primary text-xl"></i>
+                    </div>
                 </div>
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-500 font-bold">
-                        <tr>
-                            <th class="px-6 py-4">Client</th>
-                            <th class="px-6 py-4">Vehicle</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4">Amount</th>
-                            <th class="px-6 py-4 text-right">Action</th>
+                <div class="mt-4">
+                    <span class="text-green-600 text-sm font-semibold">
+                        <i class="fas fa-arrow-up mr-1"></i>12% depuis le mois dernier
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Réservations</p>
+                        <p class="text-3xl font-bold text-dark mt-2">42</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-green-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-green-600 text-sm font-semibold">
+                        <i class="fas fa-arrow-up mr-1"></i>8% depuis le mois dernier
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Revenu mensuel</p>
+                        <p class="text-3xl font-bold text-dark mt-2">24,580€</p>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-euro-sign text-yellow-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-green-600 text-sm font-semibold">
+                        <i class="fas fa-arrow-up mr-1"></i>15% depuis le mois dernier
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Card 4 -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Avis en attente</p>
+                        <p class="text-3xl font-bold text-dark mt-2">7</p>
+                    </div>
+                    <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-star text-red-600 text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <span class="text-red-600 text-sm font-semibold">
+                        <i class="fas fa-arrow-up mr-1"></i>3 nouveaux
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Chart 1 -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-bold text-dark mb-6">Réservations par mois</h2>
+                <div class="h-64 flex items-center justify-center bg-gray-100 rounded-lg">
+                    <div class="text-center text-gray-500">
+                        <i class="fas fa-chart-bar text-4xl mb-4"></i>
+                        <p>Graphique des réservations</p>
+                        <p class="text-sm">(Intégrer graphique ici)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chart 2 -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-bold text-dark mb-6">Véhicules les plus populaires</h2>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium text-dark">BMW X5</span>
+                            <span class="text-sm font-medium text-dark">42 locations</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 70%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium text-dark">Mercedes Classe A</span>
+                            <span class="text-sm font-medium text-dark">38 locations</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium text-dark">Audi Q7</span>
+                            <span class="text-sm font-medium text-dark">35 locations</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 55%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium text-dark">Peugeot 208</span>
+                            <span class="text-sm font-medium text-dark">28 locations</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 45%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-bold text-dark mb-6">Activité récente</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="text-left py-3 px-4 text-gray-700 font-semibold">Utilisateur</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-semibold">Action</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-semibold">Date</th>
+                            <th class="text-left py-3 px-4 text-gray-700 font-semibold">Statut</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y">
-                        <tr class="text-sm hover:bg-gray-50 transition">
-                            <td class="px-6 py-4 font-medium">John Doe</td>
-                            <td class="px-6 py-4 text-gray-600">Tesla Model 3</td>
-                            <td class="px-6 py-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">Active</span></td>
-                            <td class="px-6 py-4 font-bold">$340.00</td>
-                            <td class="px-6 py-4 text-right"><button class="text-gray-400 hover:text-blue-900">Edit</button></td>
+                    <tbody>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">Marie Dubois</td>
+                            <td class="py-3 px-4">Nouvelle réservation #RES-2023-0015</td>
+                            <td class="py-3 px-4">10:30 Aujourd'hui</td>
+                            <td class="py-3 px-4">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
+                                    Confirmée
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">Thomas Martin</td>
+                            <td class="py-3 px-4">Avis soumis pour BMW X5</td>
+                            <td class="py-3 px-4">Hier, 16:45</td>
+                            <td class="py-3 px-4">
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
+                                    En attente
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">Jean Dupont</td>
+                            <td class="py-3 px-4">Réservation annulée #RES-2023-0014</td>
+                            <td class="py-3 px-4">Hier, 14:20</td>
+                            <td class="py-3 px-4">
+                                <span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full">
+                                    Annulée
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4">Sophie Lambert</td>
+                            <td class="py-3 px-4">Nouveau compte créé</td>
+                            <td class="py-3 px-4">14 Mars, 11:15</td>
+                            <td class="py-3 px-4">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">
+                                    Activé
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-    </main>
-</div>
+    </div>
+</main>
+
+<?php include "../includes/footer.php" ?>
