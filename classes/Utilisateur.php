@@ -1,17 +1,23 @@
 <?php
-
-class Utilisateur{
+include "DataBase.php";
+class Utilisateur
+{
     protected $id;
     protected $nom;
     protected $email;
     protected $motPasse;
+    protected $role;
     protected $telephone;
-    protected $adress;
-    protected $permisNumero;
-    protected $dateInscription;
+    protected $adresse;
 
-    public function __construct($nom, $email, $motPasse, $telephone, $adress, $permisNumero, $dateInscription){
-        $this->id = null;
+    protected $permisNumero;
+    protected $statut;
+    protected $dateInscription;
+    protected static ?PDO $pdo = null;
+
+    public function __construct($id = null, $nom = null, $email = null, $motPasse = null, $role = null, $telephone = null, $adress = null, $permisNumero = null, $statut = null, $dateInscription = null)
+    {
+        $this->id = $id;
         $this->nom = $nom;
         $this->email = $email;
         $this->motPasse = $motPasse;
@@ -19,9 +25,79 @@ class Utilisateur{
         $this->adress = $adress;
         $this->permisNumero = $permisNumero;
         $this->dateInscription = $dateInscription;
+        $this->role = $role;
+        $this->statut = $statut;
+        self::initPDO();
     }
 
-    public function seConnecter(){
-        
+        private static function initPDO()
+    {
+        if (self::$pdo === null) {
+            self::$pdo = Database::getInstance()->getConnection();
+        }
+    }
+
+
+    public static function findByEmail($email)
+    {
+        self::initPDO();
+        $sql = "select * from utilisateurs where email = '$email';";
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            return new Utilisateur($row["id"], $row["nom"], $row["email"], $row["mot_de_passe"], $row["role"], $row["telephone"], $row["adresse"], $row["permis_numero"], $row["statut"], $row["date_inscription"]);
+        } else {
+            return null;
+        }
+    }
+    public function seConnecter($email, $pass)
+    {
+        $userFind = (new Utilisateur())->findByEmail($email);
+        if(!$userFind) return null;
+
+        if (password_verify($pass, $userFind->__get("motPasse"))){
+            return $userFind;
+        }
+        // print_r($userFind);
+        return null;
+    }
+
+    public function sInscrire()
+    {
+        $userFind = (new Utilisateur())->findByEmail($this->email);
+        if ($userFind) {
+            return null;
+        } else {
+            $sql = "INSERT INTO utilisateurs
+            (nom, email, mot_de_passe, role, telephone, adresse, permis_numero, statut)
+            VALUES
+            (:nom, :email, :motPasse, :role, :telephone, :adress, :permisNumero, :statut)";
+
+            $stmt = self::$pdo->prepare($sql);
+
+            $stmt->execute([
+                'nom'          => $this->nom,
+                'email'        => $this->email,
+                'motPasse'     => $this->motPasse,
+                'role'         => 'client',
+                'telephone'    => $this->telephone,
+                'adress'       => $this->adress,
+                'permisNumero' => $this->permisNumero,
+                'statut'       => 1
+            ]);
+
+            return true;
+        }
+    }
+
+    public function __get($att)
+    {
+        return $this->$att;
+    }
+
+    public function __set($att, $value)
+    {
+        $this->$att = $value;
     }
 }
