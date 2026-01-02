@@ -71,5 +71,5 @@
 
 1. **Cloner le dépôt**
 ```bash
-git clone [url-du-projet]
+git clone https://github.com/mohamedAttefi/MaBagnole.git
 cd mabagnole
