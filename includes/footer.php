@@ -10,7 +10,7 @@
                 </div>
                 <p class="text-gray-300 text-sm">Location de véhicules de qualité depuis 2010.</p>
             </div>
-            
+
             <div>
                 <h4 class="font-semibold text-lg mb-4">Liens rapides</h4>
                 <ul class="space-y-2">
@@ -20,7 +20,7 @@
                     <li><a href="#" class="text-gray-300 hover:text-white transition">FAQ</a></li>
                 </ul>
             </div>
-            
+
             <div>
                 <h4 class="font-semibold text-lg mb-4">Contact</h4>
                 <ul class="space-y-2 text-gray-300">
@@ -38,7 +38,7 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div>
                 <h4 class="font-semibold text-lg mb-4">Suivez-nous</h4>
                 <div class="flex space-x-4">
@@ -54,11 +54,12 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="border-t border-white/20 mt-8 pt-8 text-center text-gray-300 text-sm">
             <p>&copy; 2023 MaBagnole. Tous droits réservés.</p>
         </div>
     </div>
 </footer>
 </body>
+
 </html>
