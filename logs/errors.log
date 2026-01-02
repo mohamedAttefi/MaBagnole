@@ -1,0 +1,8 @@
+[02-Jan-2026 15:00:57 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MaBagnole\includes\header.php on line 2
+[02-Jan-2026 15:01:45 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MaBagnole\includes\header.php on line 2
+[02-Jan-2026 15:03:28 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MaBagnole\includes\header.php on line 2
+[02-Jan-2026 21:43:56 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MaBagnole\includes\header.php on line 2
+[02-Jan-2026 21:50:47 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MaBagnole\includes\header.php on line 2
+[02-Jan-2026 21:50:50 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MaBagnole\includes\header.php on line 2
+[02-Jan-2026 22:19:02 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MaBagnole\includes\header.php on line 2
+[02-Jan-2026 22:22:43 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\xampp\htdocs\MaBagnole\includes\header.php on line 2
