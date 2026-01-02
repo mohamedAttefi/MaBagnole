@@ -96,3 +96,61 @@ INSERT INTO avis (client_id, vehicule_id, reservation_id, note, commentaire) VAL
 (2, 1, 1, 4, 'Très bon véhicule, économique et facile à conduire.'),
 (3, 3, 2, 5, 'Exceptionnel ! Conduite fluide et technologie impressionnante.');
 
+
+
+create liste_vehicule as select * from vehicule v join categories c on v.categorie_id = c.id
+
+
+use ma_bagnole
+
+select * from vehicules v left join categories c on v.categorie_id = c.id left join avis a on v.id = a.vehicule_id;
+
+select * from utilisateurs where email = "admin@mabagnole.fr"
+
+
+CREATE VIEW ListeVehicules AS
+SELECT 
+    v.id,
+    v.marque,
+    v.modele,
+    v.annee,
+    v.prix_journalier,
+    v.carburant,
+    v.nb_places,
+    v.image_url,
+    v.disponible,
+
+    c.nom AS categorie,
+
+    ROUND(AVG(a.note), 1) AS note_moyenne,
+    COUNT(a.id) AS total_avis
+
+FROM vehicules v
+JOIN categories c ON v.categorie_id = c.id
+LEFT JOIN avis a ON v.id = a.vehicule_id
+
+GROUP BY v.id;
+
+
+CREATE OR REPLACE VIEW liste_vehicules AS
+SELECT 
+   v.*,
+    c.nom AS categorie,
+    AVG(a.note) AS note_moyenne
+FROM vehicules v
+JOIN categories c ON v.categorie_id = c.id
+LEFT JOIN avis a ON v.id = a.vehicule_id
+GROUP BY v.id;
+
+
+SELECT 
+   v.*,
+    c.nom AS categorie,
+    AVG(a.note) AS note_moyenne
+FROM vehicules v
+JOIN categories c ON v.categorie_id = c.id
+LEFT JOIN avis a ON v.id = a.vehicule_id
+GROUP BY v.id;
+
+
+
