@@ -1,226 +1,342 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tesla Model 3 | MaBagnole</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body class="bg-gray-50">
-    <!-- Navigation (identique) -->
-    <nav class="bg-white shadow-lg">
-        <!-- ... navigation code ... -->
-    </nav>
+<?php include "../includes/header.php" ?>
 
-    <div class="container mx-auto px-4 py-8">
+
+<main class="flex-grow py-8">
+    <div class="container mx-auto px-4">
         <!-- Breadcrumb -->
-        <div class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
-            <a href="index.html" class="hover:text-primary">Accueil</a>
-            <i class="fas fa-chevron-right"></i>
-            <a href="catalogue.html" class="hover:text-primary">Catalogue</a>
-            <i class="fas fa-chevron-right"></i>
-            <span class="text-gray-800 font-medium">Tesla Model 3</span>
+        <div class="mb-6">
+            <nav class="text-sm text-gray-600">
+                <a href="#" class="hover:text-secondary">Accueil</a>
+                <span class="mx-2">/</span>
+                <a href="#" class="hover:text-secondary">Véhicules</a>
+                <span class="mx-2">/</span>
+                <a href="#" class="hover:text-secondary">SUV</a>
+                <span class="mx-2">/</span>
+                <span class="text-dark font-semibold">BMW X5</span>
+            </nav>
         </div>
-
-        <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Galerie & Détails -->
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Images & Details -->
             <div class="lg:col-span-2">
-                <!-- Galerie -->
-                <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-                    <div class="mb-4">
-                        <img id="mainImage" src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200"
-                             alt="Tesla Model 3"
-                             class="w-full h-96 object-cover rounded-xl">
+                <!-- Main Image -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+                    <div class="relative h-96">
+                        <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                             alt="BMW X5" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-green-500 text-white text-sm font-semibold px-3 py-1 rounded-full">
+                                Disponible
+                            </span>
+                        </div>
                     </div>
-                    <div class="grid grid-cols-4 gap-4">
-                        <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=400"
-                             onclick="changeImage(this.src)"
-                             class="h-24 w-full object-cover rounded-lg cursor-pointer hover:opacity-80 transition">
-                        <!-- ... autres miniatures ... -->
+                    
+                    <!-- Thumbnails -->
+                    <div class="p-4 grid grid-cols-4 gap-3">
+                        <button class="h-20 rounded-lg overflow-hidden border-2 border-secondary">
+                            <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                 class="w-full h-full object-cover">
+                        </button>
+                        <button class="h-20 rounded-lg overflow-hidden border border-gray-300">
+                            <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" 
+                                 class="w-full h-full object-cover">
+                        </button>
+                        <button class="h-20 rounded-lg overflow-hidden border border-gray-300">
+                            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                <i class="fas fa-car text-gray-400 text-2xl"></i>
+                            </div>
+                        </button>
+                        <button class="h-20 rounded-lg overflow-hidden border border-gray-300">
+                            <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                <i class="fas fa-car text-gray-400 text-2xl"></i>
+                            </div>
+                        </button>
                     </div>
                 </div>
-
-                <!-- Détails -->
-                <div class="bg-white rounded-2xl shadow-lg p-8">
-                    <h2 class="text-2xl font-bold mb-6">Détails du véhicule</h2>
+                
+                <!-- Specifications -->
+                <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-dark mb-6">Spécifications</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-cogs text-secondary"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Transmission</p>
+                            <p class="font-semibold text-dark">Automatique</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-gas-pump text-secondary"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Carburant</p>
+                            <p class="font-semibold text-dark">Essence</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-users text-secondary"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Places</p>
+                            <p class="font-semibold text-dark">5 personnes</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-suitcase text-secondary"></i>
+                            </div>
+                            <p class="text-sm text-gray-600">Bagages</p>
+                            <p class="font-semibold text-dark">3 valises</p>
+                        </div>
+                    </div>
                     
-                    <!-- Spécifications -->
-                    <div class="grid md:grid-cols-2 gap-6 mb-8">
-                        <div class="space-y-4">
-                            <div class="flex items-center">
-                                <div class="w-8 text-primary mr-3">
-                                    <i class="fas fa-gas-pump"></i>
-                                </div>
-                                <div>
-                                    <div class="text-gray-600">Carburant</div>
-                                    <div class="font-semibold">Électrique</div>
-                                </div>
+                    <!-- Detailed Specs -->
+                    <div class="mt-8">
+                        <h3 class="font-bold text-lg text-dark mb-4">Caractéristiques détaillées</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Année</span>
+                                <span class="font-semibold">2023</span>
                             </div>
-                            <div class="flex items-center">
-                                <div class="w-8 text-primary mr-3">
-                                    <i class="fas fa-cogs"></i>
-                                </div>
-                                <div>
-                                    <div class="text-gray-600">Transmission</div>
-                                    <div class="font-semibold">Automatique</div>
-                                </div>
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Kilométrage</span>
+                                <span class="font-semibold">12,500 km</span>
                             </div>
-                            <div class="flex items-center">
-                                <div class="w-8 text-primary mr-3">
-                                    <i class="fas fa-user-friends"></i>
-                                </div>
-                                <div>
-                                    <div class="text-gray-600">Places</div>
-                                    <div class="font-semibold">5 personnes</div>
-                                </div>
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Couleur</span>
+                                <span class="font-semibold">Noir</span>
                             </div>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex items-center">
-                                <div class="w-8 text-primary mr-3">
-                                    <i class="fas fa-horse-head"></i>
-                                </div>
-                                <div>
-                                    <div class="text-gray-600">Puissance</div>
-                                    <div class="font-semibold">283 CV</div>
-                                </div>
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Portes</span>
+                                <span class="font-semibold">5</span>
                             </div>
-                            <div class="flex items-center">
-                                <div class="w-8 text-primary mr-3">
-                                    <i class="fas fa-road"></i>
-                                </div>
-                                <div>
-                                    <div class="text-gray-600">Autonomie</div>
-                                    <div class="font-semibold">500 km</div>
-                                </div>
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Climatisation</span>
+                                <span class="font-semibold text-green-500">✓</span>
                             </div>
-                            <div class="flex items-center">
-                                <div class="w-8 text-primary mr-3">
-                                    <i class="fas fa-tachometer-alt"></i>
-                                </div>
-                                <div>
-                                    <div class="text-gray-600">0-100 km/h</div>
-                                    <div class="font-semibold">5.3s</div>
-                                </div>
+                            <div class="flex justify-between py-3 border-b border-gray-200">
+                                <span class="text-gray-600">GPS</span>
+                                <span class="font-semibold text-green-500">✓</span>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Équipements -->
-                    <div class="mb-8">
-                        <h3 class="text-xl font-bold mb-4">Équipements inclus</h3>
-                        <div class="grid md:grid-cols-2 gap-3">
-                            <div class="flex items-center">
-                                <i class="fas fa-check text-success mr-3"></i>
-                                <span>Climatisation automatique</span>
+                </div>
+                
+                <!-- Reviews Section -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-dark">Avis clients</h2>
+                        <button class="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition font-semibold">
+                            <i class="fas fa-pen mr-2"></i>Écrire un avis
+                        </button>
+                    </div>
+                    
+                    <!-- Average Rating -->
+                    <div class="flex items-center mb-8 p-4 bg-gray-light rounded-lg">
+                        <div class="text-center mr-8">
+                            <div class="text-5xl font-bold text-dark">4.8</div>
+                            <div class="flex text-yellow-400 mt-2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
                             </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-check text-success mr-3"></i>
-                                <span>Système audio premium</span>
+                            <div class="text-gray-600 text-sm mt-2">124 avis</div>
+                        </div>
+                        <div class="flex-1">
+                            <!-- Rating bars would go here -->
+                            <div class="space-y-2">
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-600 w-8">5★</span>
+                                    <div class="flex-1 h-2 bg-gray-300 rounded-full mx-2">
+                                        <div class="h-full bg-yellow-400 rounded-full" style="width: 80%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600 w-8">80%</span>
+                                </div>
+                                <!-- Additional rating bars... -->
                             </div>
-                            <!-- ... plus d'équipements ... -->
                         </div>
                     </div>
-
-                    <!-- Description -->
-                    <div>
-                        <h3 class="text-xl font-bold mb-4">Description</h3>
-                        <p class="text-gray-600">
-                            La Tesla Model 3 2023 offre une expérience de conduite électrique exceptionnelle 
-                            avec une autonomie de 500 km. Équipée de l'Autopilot, elle propose une sécurité 
-                            et un confort incomparables.
-                        </p>
+                    
+                    <!-- Reviews List -->
+                    <div class="space-y-6">
+                        <!-- Review 1 -->
+                        <div class="border-b border-gray-200 pb-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h4 class="font-semibold text-dark">Marie Dubois</h4>
+                                    <div class="flex text-yellow-400 text-sm mt-1">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                                <span class="text-gray-500 text-sm">Il y a 2 semaines</span>
+                            </div>
+                            <p class="text-gray-700">
+                                Excellent véhicule, très confortable et parfait pour un voyage en famille. 
+                                La prise en charge était rapide et le personnel très professionnel.
+                            </p>
+                        </div>
+                        
+                        <!-- Review 2 -->
+                        <div class="border-b border-gray-200 pb-6">
+                            <div class="flex justify-between items-start mb-3">
+                                <div>
+                                    <h4 class="font-semibold text-dark">Thomas Martin</h4>
+                                    <div class="flex text-yellow-400 text-sm mt-1">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </div>
+                                </div>
+                                <span class="text-gray-500 text-sm">Il y a 1 mois</span>
+                            </div>
+                            <p class="text-gray-700">
+                                Bonne expérience globale. Le véhicule était propre et en excellent état. 
+                                Seul bémol : la consommation était un peu élevée.
+                            </p>
+                        </div>
+                        
+                        <!-- Load More -->
+                        <div class="text-center pt-4">
+                            <button class="text-secondary hover:text-orange-600 font-semibold">
+                                Voir plus d'avis <i class="fas fa-chevron-down ml-1"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Sidebar Réservation -->
+            
+            <!-- Right Column: Booking Panel -->
             <div class="lg:col-span-1">
-                <div class="bg-white rounded-2xl shadow-lg p-8 sticky top-8">
-                    <h2 class="text-2xl font-bold mb-2">Tesla Model 3 2023</h2>
-                    <div class="text-gray-600 mb-6">Berline Électrique • 5 places</div>
-                    
-                    <!-- Prix -->
-                    <div class="mb-8">
-                        <div class="text-4xl font-bold text-primary mb-2">€90<span class="text-lg text-gray-500">/jour</span></div>
-                        <div class="text-success font-medium">
-                            <i class="fas fa-bolt mr-2"></i>Disponible immédiatement
+                <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-dark">BMW X5</h2>
+                        <div class="flex items-center mt-2">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="ml-2 text-gray-600">4.8 (124 avis)</span>
                         </div>
                     </div>
-
-                    <!-- Formulaire Réservation -->
+                    
+                    <!-- Price -->
+                    <div class="mb-6">
+                        <div class="text-4xl font-bold text-secondary mb-1">89€ <span class="text-lg text-gray-600">/jour</span></div>
+                        <p class="text-gray-600">TVA incluse, assurance de base comprise</p>
+                    </div>
+                    
+                    <!-- Booking Form -->
                     <form class="space-y-6">
-                        <!-- Dates -->
                         <div>
-                            <label class="block text-gray-700 mb-2 font-medium">Dates de location</label>
-                            <div class="grid grid-cols-2 gap-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dates de location</label>
+                            <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <div class="text-sm text-gray-600 mb-1">Début</div>
-                                    <input type="date" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary">
+                                    <label class="text-xs text-gray-600 mb-1 block">Début</label>
+                                    <div class="relative">
+                                        <i class="fas fa-calendar-alt absolute left-3 top-3 text-gray-400"></i>
+                                        <input type="date" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg">
+                                    </div>
                                 </div>
                                 <div>
-                                    <div class="text-sm text-gray-600 mb-1">Fin</div>
-                                    <input type="date" class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary">
+                                    <label class="text-xs text-gray-600 mb-1 block">Fin</label>
+                                    <div class="relative">
+                                        <i class="fas fa-calendar-alt absolute left-3 top-3 text-gray-400"></i>
+                                        <input type="date" class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Lieux -->
+                        
                         <div>
-                            <label class="block text-gray-700 mb-2 font-medium">Lieux</label>
-                            <div class="space-y-4">
-                                <div>
-                                    <div class="text-sm text-gray-600 mb-1">Prise en charge</div>
-                                    <select class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary">
-                                        <option>Agence Paris Centre</option>
-                                        <option>Aéroport CDG</option>
-                                        <option>Agence Lyon</option>
-                                    </select>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Lieu de prise en charge</label>
+                            <div class="relative">
+                                <i class="fas fa-map-marker-alt absolute left-3 top-3 text-gray-400"></i>
+                                <select class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg">
+                                    <option>Paris Centre</option>
+                                    <option>Paris CDG Airport</option>
+                                    <option>Paris Orly Airport</option>
+                                    <option>Lyon Centre</option>
+                                    <option>Marseille Centre</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Extras -->
+                        <div>
+                            <h3 class="font-semibold text-gray-700 mb-3">Options supplémentaires</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="w-4 h-4 text-secondary rounded">
+                                        <span class="ml-3">Assurance premium</span>
+                                    </div>
+                                    <span class="font-semibold">+15€/jour</span>
+                                </label>
+                                <label class="flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="w-4 h-4 text-secondary rounded">
+                                        <span class="ml-3">Siège enfant</span>
+                                    </div>
+                                    <span class="font-semibold">+5€/jour</span>
+                                </label>
+                                <label class="flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" class="w-4 h-4 text-secondary rounded">
+                                        <span class="ml-3">GPS additionnel</span>
+                                    </div>
+                                    <span class="font-semibold">+8€/jour</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Summary -->
+                        <div class="bg-gray-light rounded-lg p-4">
+                            <h3 class="font-semibold text-gray-700 mb-3">Résumé</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">3 jours @ 89€</span>
+                                    <span class="font-semibold">267€</span>
                                 </div>
-                                <div>
-                                    <div class="text-sm text-gray-600 mb-1">Retour</div>
-                                    <select class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary">
-                                        <option>Agence Paris Centre</option>
-                                        <option>Aéroport CDG</option>
-                                        <option>Agence Lyon</option>
-                                    </select>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Assurance premium</span>
+                                    <span class="font-semibold">45€</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600">Frais de service</span>
+                                    <span class="font-semibold">12€</span>
+                                </div>
+                                <div class="border-t border-gray-300 pt-2 mt-2">
+                                    <div class="flex justify-between text-lg font-bold">
+                                        <span>Total</span>
+                                        <span class="text-secondary">324€</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Calcul Prix -->
-                        <div class="bg-gray-50 p-6 rounded-xl">
-                            <div class="flex justify-between mb-2">
-                                <span>Location (3 jours)</span>
-                                <span class="font-semibold">€270</span>
-                            </div>
-                            <div class="flex justify-between mb-2">
-                                <span>Assurance</span>
-                                <span>€30</span>
-                            </div>
-                            <div class="border-t pt-2 mt-2">
-                                <div class="flex justify-between text-lg font-bold">
-                                    <span>Total</span>
-                                    <span class="text-primary">€300</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Actions -->
-                        <button type="submit" 
-                                class="w-full py-4 bg-primary text-white rounded-xl hover:bg-blue-600 transition font-bold text-lg shadow-lg hover:shadow-xl">
-                            <i class="fas fa-calendar-check mr-2"></i>Réserver maintenant
+                        
+                        <!-- Reserve Button -->
+                        <button class="w-full bg-primary text-white py-3 rounded-lg hover:bg-blue-900 transition font-semibold text-lg">
+                            <i class="fas fa-calendar-check mr-2"></i>
+                            Réserver maintenant
                         </button>
                         
-                        <button type="button" 
-                                class="w-full py-3 border-2 border-primary text-primary rounded-xl hover:bg-blue-50 transition font-medium">
-                            <i class="fas fa-heart mr-2"></i>Ajouter aux favoris
-                        </button>
+                        <p class="text-center text-sm text-gray-600">
+                            Annulation gratuite jusqu'à 48h avant le début de la location
+                        </p>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</body>
-</html>
+</main>
+
+<?php include "../includes/footer.php" ?>
