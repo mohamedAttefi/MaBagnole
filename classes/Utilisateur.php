@@ -1,5 +1,5 @@
 <?php
-include "DataBase.php";
+include_once "DataBase.php";
 class Utilisateur
 {
     protected $id;
@@ -99,5 +99,13 @@ class Utilisateur
     public function __set($att, $value)
     {
         $this->$att = $value;
+    }
+
+    public static function getUserDetails($user_id){
+        self::initPDO();
+        $sql = "SELECT * FROM utilisateurs WHERE id = ?";
+    $stmt = self::$pdo->prepare($sql);
+    $stmt->execute([$user_id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

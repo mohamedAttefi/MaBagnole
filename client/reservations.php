@@ -1,294 +1,336 @@
 <?php
+// user_reservations.php
 ini_set('display_errors', '0');
 ini_set('display_startup_errors', '0');
 error_reporting(E_ALL);
 
 ini_set('log_errors', '1');
 ini_set('error_log', __DIR__ . '/../logs/errors.log');
-include "../classes/Vehicle.php";
+
 include "../classes/Reservation.php";
+include "../classes/Vehicle.php";
 
 session_start();
 
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'client') {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../client/login.php");
     exit;
 }
 
 $user_id = $_SESSION['user_id'];
-$user_nom = $_SESSION['user_nom'];
-$user_permis_numero = $_SESSION['user_permis_numero'] ?? '';
+$user_nom = $_SESSION['user_nom'] ?? 'Utilisateur';
 
-$vehicule_id = $_GET['vehicule_id'] ?? null;
-$vehicule = null;
+// Get all reservations for this user
+$reservations = Reservation::getUserReservations($user_id);
 
-if ($vehicule_id) {
-    $vehicule = Vehicle::find($vehicule_id);
+// Handle cancellation request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_reservation'])) {
+    $reservation_id = $_POST['reservation_id'] ?? null;
+    
+    if ($reservation_id) {
+        $reservation = Reservation::find($reservation_id);
+        
+        if ($reservation && $reservation->client_id == $user_id) {
+            $date_debut = new DateTime($reservation->date_debut);
+            $today = new DateTime();
+            
+            if ($date_debut > $today && in_array($reservation->statut, ['en_attente', 'confirmee'])) {
+                if ($reservation->updateStatus('annulee')) {
+                    $_SESSION['success_message'] = "La réservation a été annulée avec succès.";
+                    $reservations = Reservation::getUserReservations($user_id);
+                } else {
+                    $_SESSION['error_message'] = "Erreur lors de l'annulation de la réservation.";
+                }
+            } else {
+                $_SESSION['error_message'] = "Cette réservation ne peut pas être annulée (déjà commencée ou terminée).";
+            }
+        } else {
+            $_SESSION['error_message'] = "Vous n'êtes pas autorisé à annuler cette réservation.";
+        }
+    }
+    
+    header("Location: " . $_SERVER['PHP_SELF']);
+    exit;
 }
-
-
-$error_message = "";
-$success_message = "";
-$form_data = [];
-
-$lieux_disponibles = [
-    'Paris Centre - 123 Avenue des Champs-Élysées',
-    'Paris CDG Airport - Terminal 2E',
-    'Paris Orly Airport - Terminal Ouest',
-    'Lyon Centre - 10 Rue de la République',
-    'Marseille Centre - 25 Cours Belsunce'
-];
-
-$default_date_debut = date('Y-m-d', strtotime('+1 day'));
-$default_date_fin = date('Y-m-d', strtotime('+4 days'));
 
 include "../includes/header.php";
 ?>
 
 <main class="flex-grow py-8">
     <div class="container mx-auto px-4">
-        
-        <?php if (!$vehicule): ?>
-            <div class="max-w-2xl mx-auto text-center py-16 bg-white rounded-xl shadow-md border border-gray-100">
-                <div class="mb-6">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto">
-                        <i class="fas fa-car-side text-4xl text-gray-400"></i>
-                    </div>
-                </div>
-                <h2 class="text-3xl font-bold text-dark mb-4">Aucune réservation sélectionnée</h2>
-                <p class="text-gray-600 mb-8 px-6">
-                    Il semble que vous n'ayez pas choisi de véhicule ou que la session ait expiré. 
-                    Veuillez sélectionner un véhicule dans notre catalogue pour continuer.
-                </p>
-                <a href="../public/vehiculeListing.php" class="bg-primary text-white px-8 py-3 rounded-lg hover:bg-blue-900 transition font-semibold">
-                    <i class="fas fa-arrow-left mr-2"></i>Voir le catalogue
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-dark mb-2">Mes réservations</h1>
+            <p class="text-gray-600">Consultez et gérez toutes vos réservations</p>
+            <div class="flex items-center space-x-4 mt-3">
+                <a href="user_reviews.php" 
+                   class="inline-flex items-center text-secondary hover:text-orange-600 font-semibold">
+                    <i class="fas fa-star mr-2"></i>
+                    Voir mes avis
+                </a>
+                <a href="../public/vehiculeListing.php" 
+                   class="inline-flex items-center text-primary hover:text-blue-900 font-semibold">
+                    <i class="fas fa-car mr-2"></i>
+                    Réserver un véhicule
                 </a>
             </div>
+        </div>
 
-        <?php else: ?>
-            <div class="mb-12">
-                <div class="flex items-center justify-center">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-secondary rounded-full flex items-center justify-center text-white font-bold">1</div>
-                        <div class="h-1 w-24 bg-secondary"></div>
-                        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">2</div>
-                        <div class="h-1 w-24 bg-gray-300"></div>
-                        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold">3</div>
-                    </div>
-                </div>
-                <div class="flex justify-center mt-4 text-center">
-                    <div class="w-32"><p class="font-semibold text-secondary">Dates & Lieu</p></div>
-                    <div class="w-32"><p class="font-semibold text-gray-600">Options</p></div>
-                    <div class="w-32"><p class="font-semibold text-gray-600">Paiement</p></div>
+        <!-- Messages -->
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span><?php echo htmlspecialchars($_SESSION['success_message']); ?></span>
                 </div>
             </div>
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
 
-            <?php if (!empty($error_message)): ?>
-                <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-                    <div class="flex items-center">
-                        <i class="fas fa-exclamation-circle mr-2"></i>
-                        <span><?php echo htmlspecialchars($error_message); ?></span>
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span><?php echo htmlspecialchars($_SESSION['error_message']); ?></span>
+                </div>
+            </div>
+            <?php unset($_SESSION['error_message']); ?>
+        <?php endif; ?>
+
+        <!-- Reservations List -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <?php if (empty($reservations)): ?>
+                <!-- No Reservations -->
+                <div class="p-12 text-center">
+                    <div class="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-calendar-times text-4xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-semibold text-dark mb-3">Aucune réservation trouvée</h3>
+                    <p class="text-gray-600 mb-8 max-w-md mx-auto">
+                        Vous n'avez pas encore fait de réservation.
+                    </p>
+                    <a href="../public/vehiculeListing.php" 
+                       class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-900 transition font-semibold">
+                        <i class="fas fa-car mr-2"></i>
+                        Réserver un véhicule
+                    </a>
+                </div>
+            <?php else: ?>
+                <!-- Reservations Table -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    Véhicule
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    Dates
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    Montant
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    Statut
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <?php foreach ($reservations as $reservation):
+                                $date_debut = new DateTime($reservation['date_debut']);
+                                $date_fin = new DateTime($reservation['date_fin']);
+                                $duree_jours = $date_debut->diff($date_fin)->days + 1;
+                                
+                                $today = new DateTime();
+                                $is_future = $date_debut > $today;
+                                $is_ongoing = $date_debut <= $today && $date_fin >= $today;
+                                $is_past = $date_fin < $today;
+                                
+                                // Status badges
+                                $status_classes = [
+                                    'en_attente' => 'bg-yellow-100 text-yellow-800',
+                                    'confirmee' => 'bg-green-100 text-green-800',
+                                    'annulee' => 'bg-red-100 text-red-800',
+                                    'en_cours' => 'bg-blue-100 text-blue-800',
+                                    'terminee' => 'bg-gray-100 text-gray-800'
+                                ];
+                                
+                                $status_text = [
+                                    'en_attente' => 'En attente',
+                                    'confirmee' => 'Confirmée',
+                                    'annulee' => 'Annulée',
+                                    'en_cours' => 'En cours',
+                                    'terminee' => 'Terminée'
+                                ];
+                            ?>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <!-- Vehicle -->
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-12 w-16">
+                                                <?php if (!empty($reservation['image_url'])): ?>
+                                                    <img class="h-12 w-16 object-cover rounded" 
+                                                         src="<?php echo htmlspecialchars($reservation['image_url']); ?>" 
+                                                         alt="<?php echo htmlspecialchars($reservation['marque'] . ' ' . $reservation['modele']); ?>">
+                                                <?php else: ?>
+                                                    <div class="h-12 w-16 bg-gray-200 rounded flex items-center justify-center">
+                                                        <i class="fas fa-car text-gray-400"></i>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-dark">
+                                                    <?php echo htmlspecialchars($reservation['marque'] . ' ' . $reservation['modele']); ?>
+                                                </div>
+                                                <div class="text-xs text-gray-500">
+                                                    <?php echo htmlspecialchars($reservation['categorie'] ?? ''); ?> •
+                                                    <?php echo htmlspecialchars($reservation['carburant'] ?? ''); ?> •
+                                                    <?php echo htmlspecialchars($reservation['nb_places'] ?? ''); ?> places
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    
+                                    <!-- Dates -->
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm text-gray-900">
+                                            <?php echo $date_debut->format('d/m/Y'); ?> - <?php echo $date_fin->format('d/m/Y'); ?>
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            <?php echo $duree_jours; ?> jour<?php echo $duree_jours > 1 ? 's' : ''; ?>
+                                        </div>
+                                    </td>
+                                    
+                                    <!-- Amount -->
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm font-semibold text-dark">
+                                            <?php echo number_format($reservation['prix_total'], 2, ',', ' '); ?>€
+                                        </div>
+                                        <div class="text-xs text-gray-500">
+                                            <?php echo number_format($reservation['prix_total'] / $duree_jours, 2, ',', ' '); ?>€/jour
+                                        </div>
+                                    </td>
+                                    
+                                    <!-- Status -->
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            <?php echo $status_classes[$reservation['statut']] ?? 'bg-gray-100 text-gray-800'; ?>">
+                                            <?php echo $status_text[$reservation['statut']] ?? $reservation['statut']; ?>
+                                        </span>
+                                        <?php if ($is_ongoing): ?>
+                                            <span class="ml-1 px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                En cours
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
+                                    
+                                    <!-- Actions -->
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-wrap gap-2">
+                                            <!-- View Details -->
+                                            <a href="reservation_detail.php?id=<?php echo $reservation['id']; ?>"
+                                               class="inline-flex items-center text-primary hover:text-blue-900 text-sm p-1"
+                                               title="Voir les détails">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            
+                                            <!-- Cancel Button -->
+                                            <?php if ($is_future && in_array($reservation['statut'], ['en_attente', 'confirmee'])): ?>
+                                                <form method="POST" class="inline">
+                                                    <input type="hidden" name="reservation_id" value="<?php echo $reservation['id']; ?>">
+                                                    <input type="hidden" name="cancel_reservation" value="1">
+                                                    <button type="submit"
+                                                            onclick="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');"
+                                                            class="inline-flex items-center text-red-600 hover:text-red-900 text-sm p-1"
+                                                            title="Annuler la réservation">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+                                            
+                                            <!-- Rate Vehicle Link -->
+                                            <?php if ($is_past || $reservation['statut'] === 'confirmee'): ?>
+                                                <a href="user_reviews.php?add_for_vehicle=<?php echo $reservation['vehicule_id']; ?>"
+                                                   class="inline-flex items-center text-green-600 hover:text-green-900 text-sm p-1"
+                                                   title="Noter ce véhicule">
+                                                    <i class="fas fa-star"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                            
+                                            <!-- Invoice Button -->
+                                            <?php if ($is_past): ?>
+                                                <a href="generate_invoice.php?reservation_id=<?php echo $reservation['id']; ?>" 
+                                                   class="inline-flex items-center text-blue-600 hover:text-blue-900 text-sm p-1"
+                                                   title="Télécharger facture">
+                                                    <i class="fas fa-file-invoice"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Summary -->
+                <div class="border-t border-gray-200 bg-gray-50 px-6 py-4">
+                    <div class="flex flex-col md:flex-row justify-between items-center">
+                        <div class="mb-4 md:mb-0">
+                            <p class="text-sm text-gray-600">
+                                <?php 
+                                $completed_count = 0;
+                                foreach ($reservations as $res) {
+                                    if ($res['statut'] === 'confirmee') $completed_count++;
+                                }
+                                ?>
+                                <?php echo count($reservations); ?> réservation<?php echo count($reservations) > 1 ? 's' : ''; ?> 
+                                (<?php echo $completed_count; ?> terminée<?php echo $completed_count > 1 ? 's' : ''; ?>)
+                            </p>
+                        </div>
+                        <div class="flex flex-col md:flex-row md:space-x-6">
+                            <div class="text-center md:text-right mb-3 md:mb-0">
+                                <p class="text-sm text-gray-600">Total dépensé</p>
+                                <p class="text-lg font-bold text-dark">
+                                    <?php 
+                                    $total_spent = 0;
+                                    foreach ($reservations as $res) {
+                                        $total_spent += $res['prix_total'];
+                                    }
+                                    echo number_format($total_spent, 2, ',', ' '); ?>€
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             <?php endif; ?>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2">
-                    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-                        <h2 class="text-2xl font-bold text-dark mb-6">Détails de la réservation</h2>
-
-                        <div class="flex items-center p-4 bg-gray-light rounded-lg mb-8">
-                            <img src="<?php echo htmlspecialchars($vehicule->getImageUrl()); ?>" 
-                                 alt="<?php echo htmlspecialchars($vehicule->getMarque() . ' ' . $vehicule->getModele()); ?>" 
-                                 class="w-24 h-16 object-cover rounded-lg">
-                            <div class="ml-4">
-                                <h3 class="font-bold text-lg text-dark"><?php echo htmlspecialchars($vehicule->getMarque() . ' ' . $vehicule->getModele()); ?></h3>
-                                <p class="text-gray-600 text-sm">
-                                    <?php echo htmlspecialchars($vehicule->getCategorie() ?? 'SUV'); ?> • 
-                                    <?php echo htmlspecialchars($vehicule->getCarburant() ?? 'Essence'); ?> • 
-                                    <?php echo htmlspecialchars($vehicule->getNbPlaces()); ?> places
-                                </p>
-                            </div>
-                            <div class="ml-auto text-right">
-                                <div class="text-2xl font-bold text-secondary">
-                                    <?php echo number_format($vehicule->getPrixJournalier(), 2, ',', ' '); ?>€
-                                    <span class="text-lg text-gray-600">/jour</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <form method="POST" action="reservation-process.php" id="reservationForm">
-                            <input type="hidden" name="vehicule_id" value="<?php echo $vehicule_id; ?>">
-                            
-                            <div class="flex justify-between pt-6 border-t border-gray-200">
-                                <a href="../vehicules.php" class="text-secondary hover:text-orange-600 font-semibold">
-                                    <i class="fas fa-arrow-left mr-2"></i>Retour aux véhicules
-                                </a>
-                                <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-900 transition font-semibold">
-                                    Continuer vers les options
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="lg:col-span-1">
-                    <div class="bg-white rounded-xl shadow-lg p-6 sticky top-24">
-                         <h2 class="text-2xl font-bold text-dark mb-6">Résumé</h2>
-                         </div>
-                </div>
-            </div>
-        <?php endif; ?>
+        </div>
     </div>
 </main>
 
-<?php if ($vehicule): ?>
 <script>
-// Données du véhicule pour les calculs
-const vehicleData = {
-    pricePerDay: <?php echo $vehicule->getPrixJournalier(); ?>,
-    vehicleId: <?php echo $vehicule->getId(); ?>
-};
-
-// Calculer le prix lorsque les dates changent
-function calculatePrice() {
-    const dateDebut = document.querySelector('input[name="date_debut"]');
-    const dateFin = document.querySelector('input[name="date_fin"]');
-    
-    if (!dateDebut.value || !dateFin.value) {
-        return;
-    }
-    
-    // Calculer le nombre de jours
-    const start = new Date(dateDebut.value);
-    const end = new Date(dateFin.value);
-    const days = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
-    
-    // Prix de base
-    const basePrice = vehicleData.pricePerDay * days;
-    
-    // Frais de service (10% minimum 15€)
-    const serviceFees = Math.max(basePrice * 0.10, 15);
-    
-    // Taxes (20%)
-    const taxes = basePrice * 0.20;
-    
-    // Total
-    const total = basePrice + serviceFees + taxes;
-    
-    // Mettre à jour l'affichage
-    document.getElementById('daysCount').textContent = days;
-    document.getElementById('priceBase').textContent = basePrice.toFixed(2) + '€';
-    document.getElementById('priceService').textContent = serviceFees.toFixed(2) + '€';
-    document.getElementById('priceTaxes').textContent = taxes.toFixed(2) + '€';
-    document.getElementById('priceTotal').textContent = total.toFixed(2) + '€';
-}
-
-// Validation des dates
-function validateDates() {
-    const dateDebut = document.querySelector('input[name="date_debut"]');
-    const dateFin = document.querySelector('input[name="date_fin"]');
-    
-    if (!dateDebut.value || !dateFin.value) {
-        return true;
-    }
-    
-    const start = new Date(dateDebut.value);
-    const end = new Date(dateFin.value);
-    const today = new Date();
-    
-    // Réinitialiser le min de date_fin
-    const tomorrow = new Date(dateDebut.value);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
-    dateFin.min = tomorrowStr;
-    
-    // Validation
-    if (start <= today) {
-        alert('La date de début doit être dans le futur');
-        dateDebut.focus();
-        return false;
-    }
-    
-    if (end <= start) {
-        alert('La date de fin doit être après la date de début');
-        dateFin.focus();
-        return false;
-    }
-    
-    if ((end - start) / (1000 * 60 * 60 * 24) > 30) {
-        alert('La durée de location ne peut pas dépasser 30 jours');
-        dateFin.focus();
-        return false;
-    }
-    
-    return true;
-}
-
-// Événements
 document.addEventListener('DOMContentLoaded', function() {
-    // Calcul initial
-    calculatePrice();
-    
-    // Écouter les changements de dates
-    document.querySelectorAll('input[name="date_debut"], input[name="date_fin"]').forEach(input => {
-        input.addEventListener('change', function() {
-            if (validateDates()) {
-                calculatePrice();
-            }
-        });
-    });
-    
-    // Validation du formulaire
-    document.getElementById('reservationForm').addEventListener('submit', function(e) {
-        // Vérifier les champs requis
-        const requiredFields = document.querySelectorAll('input[required], select[required]');
-        let isValid = true;
-        
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                field.classList.add('border-red-500');
-                isValid = false;
-            } else {
-                field.classList.remove('border-red-500');
-            }
-        });
-        
-        // Vérifier les dates
-        if (!validateDates()) {
-            isValid = false;
-        }
-        
-        // Vérifier le permis si nécessaire
-        const permisField = document.querySelector('input[name="permis_numero"]');
-        if (permisField && !permisField.value.trim()) {
-            if (!confirm('Vous n\'avez pas renseigné votre numéro de permis. Voulez-vous continuer quand même ?')) {
+    // Confirmation for cancellation
+    const cancelButtons = document.querySelectorAll('button[onclick*="annuler"]');
+    cancelButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (!confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
                 e.preventDefault();
-                return;
+                return false;
             }
-        }
-        
-        if (!isValid) {
-            e.preventDefault();
-            alert('Veuillez remplir tous les champs obligatoires (*)');
-        }
-    });
-    
-    // Ajuster la date de fin quand la date de début change
-    const dateDebut = document.querySelector('input[name="date_debut"]');
-    const dateFin = document.querySelector('input[name="date_fin"]');
-    
-    dateDebut.addEventListener('change', function() {
-        if (dateDebut.value && !dateFin.value) {
-            // Si date_fin vide, mettre par défaut 3 jours après
-            const defaultEnd = new Date(dateDebut.value);
-            defaultEnd.setDate(defaultEnd.getDate() + 3);
-            dateFin.value = defaultEnd.toISOString().split('T')[0];
-            calculatePrice();
-        }
+            return true;
+        });
     });
 });
 </script>
-<?php endif; ?>
 
-<?php include "../includes/footer.php" ?>
+<style>
+.bg-yellow-50 {
+    background-color: rgba(254, 243, 199, 0.5);
+}
+</style>
+
+<?php include "../includes/footer.php"; ?>

@@ -108,17 +108,11 @@ select * from vehicules v left join categories c on v.categorie_id = c.id left j
 select * from utilisateurs where email = "admin@mabagnole.fr"
 
 
-CREATE VIEW ListeVehicules AS
+SELECT * FROM reservations r left join vehicules v on r.vehicule_id = v.id where r.client_id = 8 ORDER BY date_debut DESC
+
+CREATE OR REPLACE VIEW ListeVehicules AS
 SELECT 
-    v.id,
-    v.marque,
-    v.modele,
-    v.annee,
-    v.prix_journalier,
-    v.carburant,
-    v.nb_places,
-    v.image_url,
-    v.disponible,
+    v.*,
 
     c.nom AS categorie,
 
@@ -132,7 +126,7 @@ LEFT JOIN avis a ON v.id = a.vehicule_id
 GROUP BY v.id;
 
 
-CREATE OR REPLACE VIEW liste_vehicules AS
+CREATE OR REPLACE VIEW listevehicules AS
 SELECT 
    v.*,
     c.nom AS categorie,
